@@ -1,0 +1,21 @@
+id,question,answer
+1,What was your total revenue for the last fiscal year?,"Our total revenue for FY2024 was €48.6 million, representing a 12% year-over-year growth."
+2,What are your main revenue streams?,"64% of our revenue comes from software licensing, 28% from managed services, and 8% from consulting engagements."
+3,What is your EBITDA margin?,"Our EBITDA margin has averaged 16% over the last three years, with operating costs stable at around €9 million annually."
+4,How do you manage cash flow during low-revenue months?,We maintain a rolling 6-month liquidity buffer and use invoice factoring for large enterprise clients.
+5,What’s the company’s debt-to-equity ratio?,"As of Q4 2024, our debt-to-equity ratio is 0.42, showing conservative leverage."
+6,How are customer contracts structured?,Most contracts follow a 1-year subscription model with auto-renewal and 60-day cancellation notice.
+7,How is churn calculated?,We define churn as any customer inactive for 90+ days and not under contract renewal discussions.
+8,What are your main cost centers?,"Payroll accounts for 52% of costs, cloud infrastructure 18%, marketing 10%, and R&D 12%."
+9,How do you forecast growth?,Growth is projected based on 3-year weighted pipeline conversion and ARR expansion within top-tier accounts.
+10,How is financial data consolidated?,We use NetSuite integrated with PowerBI dashboards across business units for unified reporting.
+11,What’s your biggest operational challenge?,Our biggest challenge has been scaling customer support without compromising SLA response times.
+12,How is employee turnover tracked?,"HRIS tracks monthly attrition rates and exit interview feedback, currently averaging 8.5% annually."
+13,How do you assess vendor reliability?,"We use a quarterly vendor scoring system based on delivery consistency, pricing, and SLA adherence."
+14,What are your cybersecurity measures?,"All systems are ISO 27001 certified, with biannual pen testing and 24/7 intrusion monitoring."
+15,What’s your approach to sustainability?,"We reduced carbon footprint by 18% last year via green hosting, travel limits, and paperless policies."
+16,How are key decisions made across departments?,"Department heads propose quarterly OKRs, validated by the executive board in monthly alignment meetings."
+17,What’s your product uptime guarantee?,"99.95% uptime backed by AWS SLA, monitored continuously via Datadog and custom anomaly detection."
+18,How do you handle M&A integrations?,Each acquisition is assigned a cross-functional taskforce led by operations and finance.
+19,What are your long-term strategic priorities?,"Expansion into DACH region, AI-driven automation, and doubling ARR in 3 years."
+20,How do you ensure data accuracy in financial reporting?,Finance team conducts monthly reconciliations and quarterly external audits by KPMG.

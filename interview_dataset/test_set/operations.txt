@@ -1,0 +1,29 @@
+Operations & Strategy Overview
+
+Global Footprint:
+Headquarters: Rotterdam, NL
+Regional Offices: Munich, Prague, Lisbon
+
+Operational Priorities:
+1. Process automation via AI and workflow orchestration.
+2. Data quality improvement across departments.
+3. SLA consistency and support optimization.
+
+Customer Support:
+- 24/7 support coverage.
+- Avg response time: 12 minutes.
+- CSAT: 92%.
+
+Supply Chain:
+- Vendor management via quarterly scorecard.
+- Strategic partnerships with AWS, Atlassian, and Google Cloud.
+
+Governance:
+- Quarterly OKR review board.
+- Monthly cross-functional syncs for finance, engineering, and ops.
+- Sustainability reporting aligned with GRI framework.
+
+2025 Goals:
+- 10% improvement in operational efficiency.
+- ISO 9001 certification.
+- Reduce carbon footprint by additional 10%.

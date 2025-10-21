@@ -1,0 +1,29 @@
+Engineering & Product Development Overview
+
+Core Product: AcquiSuite – a due diligence automation SaaS platform.
+Tech Stack:
+- Backend: GoLang, Python, FastAPI
+- Frontend: React + TypeScript
+- Database: PostgreSQL + Redis
+- Infrastructure: AWS (ECS, RDS, S3)
+- CI/CD: GitHub Actions + Terraform
+
+Key Projects 2024:
+1. AI-powered document parsing pipeline (15% faster data ingestion)
+2. RAG-based QnA system for financial due diligence
+3. Migration from ECS to EKS for scalability
+4. SOC2 compliance automation project
+
+Development Process:
+- Agile sprints (2 weeks)
+- Code coverage goal: 85%
+- Peer review and continuous deployment pipeline
+
+Incident Metrics:
+- Mean time to recovery (MTTR): 12 minutes
+- Uptime: 99.95%
+- Major incidents in FY2024: 3
+
+Innovation Focus 2025:
+- Embedding LLMs for contextual Q&A
+- Building internal analytics assistant (codename: LumenAI)

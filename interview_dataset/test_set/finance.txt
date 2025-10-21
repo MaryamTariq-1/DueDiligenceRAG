@@ -1,0 +1,33 @@
+AcquiTech Solutions – Financial Overview FY2024
+
+Revenue: €48.6M (12% YoY increase)
+Gross Margin: 68%
+Operating Costs: €9M
+Net Profit: €6.7M
+EBITDA Margin: 16%
+
+Revenue Sources:
+- SaaS Subscriptions: 64%
+- Managed Services: 28%
+- Consulting: 8%
+
+Major Clients:
+1. EuroLogix BV (14% of total revenue)
+2. TechPro AG (9%)
+3. BundesDigital (7%)
+
+Debt & Liabilities:
+Total Liabilities: €8.4M
+Debt-to-Equity Ratio: 0.42
+
+Cash Flow:
+Operating cash flow positive for 11 consecutive quarters.
+Liquidity buffer: 6 months average operating expenses.
+
+Audit & Compliance:
+Audited annually by KPMG Netherlands.
+All financial reports integrated via NetSuite + PowerBI.
+
+Forecast FY2025:
+Projected revenue: €55M, expected EBITDA margin 17%.
+Investment focus: R&D and market expansion in DACH.
