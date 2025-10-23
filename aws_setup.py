@@ -14,7 +14,7 @@ def aws_complete_test():
     aws_secret_key = os.getenv("AWS_SECRET_ACCESS_KEY")
     aws_region = os.getenv("AWS_REGION", "eu-north-1")
     bucket_name = "company-due-diligence-data-maryamtariq"
-    base_path = "D:/PycharmProjects/InterviewTest1/DueDiligenceRAG/interview_dataset"
+    base_path = "C:\vs\duediligence\DueDiligenceRAG\interview_dataset"
 
     s3 = boto3.client(
         's3',
