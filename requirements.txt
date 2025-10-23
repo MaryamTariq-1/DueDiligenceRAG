@@ -1,13 +1,27 @@
-langchain==0.1.0
+# requirements.txt - COMPATIBLE VERSION
+langfuse==3.8.0
+boto3==1.34.0
+
+# LangChain ecosystem - compatible versions
+langchain-core==0.1.53
 langchain-community==0.0.10
-langchain-openai==0.0.5
-langfuse==2.0.0
-openai==1.3.0
-anthropic==0.7.2
-boto3==1.28.0
+langchain-openai==0.0.2
+langchain-anthropic==0.0.1
+
+# OpenAI - let pip choose compatible version
+openai>=1.6.1
+
+# Other dependencies
+sentence-transformers==2.2.2
 faiss-cpu==1.7.4
 pandas==2.0.3
-python-dotenv==1.0.0
 scikit-learn==1.3.0
-tiktoken==0.5.1
-sentence-transformers==2.2.2
+python-dotenv==1.0.0
+anthropic==0.7.4
+
+# Additional dependencies that might be needed
+numpy==1.26.4
+tenacity==8.5.0
+tqdm==4.66.1
+transformers==4.35.2
+torch==2.1.2
