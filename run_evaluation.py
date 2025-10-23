@@ -53,7 +53,7 @@ def run_complete_evaluation():
         print(f"✗ RAG test failed: {e}")
         return
     
-    n
+
     print("\n STEP 3: Running Full Evaluation")
     print("-" * 30)
     
