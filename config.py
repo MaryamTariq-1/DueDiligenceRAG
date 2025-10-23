@@ -2,9 +2,10 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+path_env = "/content/DueDiligenceRAG/.env"
+load_dotenv(path_env)
 
-# ALL FREE APIs
+# ALL AVAILABLE APIs
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
@@ -23,9 +24,51 @@ AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 S3_BUCKET_NAME = "company-due-diligence-data-maryamtariq"
 AWS_REGION = "eu-north-1"
 
-# COMPLETE FREE MODELS CONFIG
-FREE_MODELS = {
-    # OpenRouter FREE Models
+# WORKING MODELS CONFIGURATION
+MODELS = {
+    # Groq Models (Fast & Free)
+    "llama-3.1-8b-instant": {
+        "provider": "groq",
+        "api_key": GROQ_API_KEY,
+        "base_url": "https://api.groq.com/openai/v1",
+        "cost_input": 0.0,
+        "cost_output": 0.0,
+        "max_tokens": 2000,
+        "description": "Llama 3.1 8B - Groq (Fastest)"
+    },
+
+    "llama-3.3-70b-versatile": {
+        "provider": "groq",
+        "api_key": GROQ_API_KEY,
+        "base_url": "https://api.groq.com/openai/v1",
+        "cost_input": 0.0,
+        "cost_output": 0.0,
+        "max_tokens": 2000,
+        "description": "Llama 3.3 70B - Groq (Most Powerful)"
+    },
+
+    "mixtral-8x7b-32768": {
+        "provider": "groq",
+        "api_key": GROQ_API_KEY,
+        "base_url": "https://api.groq.com/openai/v1",
+        "cost_input": 0.0,
+        "cost_output": 0.0,
+        "max_tokens": 2000,
+        "description": "Mixtral 8x7B - Groq (Good Balance)"
+    },
+
+    # DeepSeek Models (Free)
+    "deepseek-chat": {
+        "provider": "deepseek",
+        "api_key": DEEPSEEK_API_KEY,
+        "base_url": "https://api.deepseek.com/v1",
+        "cost_input": 0.0,
+        "cost_output": 0.0,
+        "max_tokens": 2000,
+        "description": "DeepSeek Chat - FREE"
+    },
+
+    # OpenRouter Free Models
     "mistralai/mistral-7b-instruct:free": {
         "provider": "openrouter",
         "api_key": OPENROUTER_API_KEY,
@@ -36,90 +79,25 @@ FREE_MODELS = {
         "description": "Mistral 7B - OpenRouter FREE"
     },
 
-    "nousresearch/hermes-3-llama-3.1-405b:free": {
-        "provider": "openrouter",
-        "api_key": OPENROUTER_API_KEY,
-        "base_url": "https://openrouter.ai/api/v1",
+    # Google AI Studio Models
+    "gemini-1.5-flash": {
+        "provider": "google",
+        "api_key": GOOGLE_AI_STUDIO_API_KEY,
+        "base_url": "https://generativelanguage.googleapis.com/v1beta/models/",
         "cost_input": 0.0,
         "cost_output": 0.0,
-        "max_tokens": 1000,
-        "description": "Hermes 3 Llama 405B - OpenRouter FREE"
-    },
-
-    # Groq FREE Models (100% FREE & FASTEST)
-    "llama-3.1-8b-instant": {
-        "provider": "groq",
-        "api_key": GROQ_API_KEY,
-        "base_url": "https://api.groq.com/openai/v1",
-        "cost_input": 0.0,
-        "cost_output": 0.0,
-        "max_tokens": 1000,
-        "description": "Llama 3.1 8B - Groq (Fastest)"
-    },
-
-    "llama-3.2-1b-preview": {
-        "provider": "groq",
-        "api_key": GROQ_API_KEY,
-        "base_url": "https://api.groq.com/openai/v1",
-        "cost_input": 0.0,
-        "cost_output": 0.0,
-        "max_tokens": 1000,
-        "description": "Llama 3.2 1B - Groq"
-    },
-
-    "llama-3.2-3b-preview": {
-        "provider": "groq",
-        "api_key": GROQ_API_KEY,
-        "base_url": "https://api.groq.com/openai/v1",
-        "cost_input": 0.0,
-        "cost_output": 0.0,
-        "max_tokens": 1000,
-        "description": "Llama 3.2 3B - Groq"
-    },
-
-    "llama-3.3-70b-versatile": {
-        "provider": "groq",
-        "api_key": GROQ_API_KEY,
-        "base_url": "https://api.groq.com/openai/v1",
-        "cost_input": 0.0,
-        "cost_output": 0.0,
-        "max_tokens": 1000,
-        "description": "Llama 3.3 70B - Groq (Powerful)"
-    },
-
-    "mixtral-8x7b-32768": {
-        "provider": "groq",
-        "api_key": GROQ_API_KEY,
-        "base_url": "https://api.groq.com/openai/v1",
-        "cost_input": 0.0,
-        "cost_output": 0.0,
-        "max_tokens": 1000,
-        "description": "Mixtral 8x7B - Groq"
-    },
-
-    # DeepSeek FREE Models
-    "deepseek-chat": {
-        "provider": "deepseek",
-        "api_key": DEEPSEEK_API_KEY,
-        "base_url": "https://api.deepseek.com/v1",
-        "cost_input": 0.0,
-        "cost_output": 0.0,
-        "max_tokens": 1000,
-        "description": "DeepSeek Chat - FREE"
-    },
-
-    "deepseek-coder": {
-        "provider": "deepseek",
-        "api_key": DEEPSEEK_API_KEY,
-        "base_url": "https://api.deepseek.com/v1",
-        "cost_input": 0.0,
-        "cost_output": 0.0,
-        "max_tokens": 1000,
-        "description": "DeepSeek Coder - FREE"
+        "max_tokens": 2000,
+        "description": "Gemini 1.5 Flash - Google"
     }
 }
 
-MODELS = FREE_MODELS
+# Selected models for evaluation (4 models as per assignment)
+EVALUATION_MODELS = [
+    "llama-3.3-70b-versatile",  # Groq - Most powerful
+    "deepseek-chat",            # DeepSeek - Free alternative
+    "gemini-1.5-flash",         # Google - Different provider
+    "mixtral-8x7b-32768"        # Groq - Good balance
+]
 
 # Prompt Styles
 PROMPT_STYLES = ["factual", "analytical", "structured"]
@@ -129,3 +107,6 @@ CHUNK_SIZE = 500
 CHUNK_OVERLAP = 100
 TOP_K_RESULTS = 4
 EMBEDDING_MODEL = "sentence-transformers/all-mpnet-base-v2"
+
+# Evaluation Configuration
+NUM_EVALUATION_QUESTIONS = 10

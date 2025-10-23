@@ -1,9 +1,9 @@
-# document_loader.py - FIXED VERSION
+
 import boto3
 import os
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_core.documents import Document
 from config import S3_BUCKET_NAME, CHUNK_SIZE, CHUNK_OVERLAP, EMBEDDING_MODEL
 import time
@@ -12,9 +12,9 @@ import time
 class DocumentLoader:
     def __init__(self):
         self.s3 = boto3.client('s3')
-        # Use HuggingFace embeddings instead of OpenAI to avoid API costs
+        # FIXED: Use FREE HuggingFace embeddings instead of OpenAI
         self.embeddings = HuggingFaceEmbeddings(
-            model_name="sentence-transformers/all-mpnet-base-v2"
+            model_name=EMBEDDING_MODEL
         )
         self.text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=CHUNK_SIZE,

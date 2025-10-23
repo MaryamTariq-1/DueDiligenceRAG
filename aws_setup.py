@@ -1,9 +1,10 @@
-# aws_complete_test.py
+
 import boto3
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+env_path = '/content/DueDiligenceRAG/content/DueDiligenceRAG/.env'
+load_dotenv(env_path)
 
 
 def aws_complete_test():
@@ -14,7 +15,8 @@ def aws_complete_test():
     aws_secret_key = os.getenv("AWS_SECRET_ACCESS_KEY")
     aws_region = os.getenv("AWS_REGION", "eu-north-1")
     bucket_name = "company-due-diligence-data-maryamtariq"
-    base_path = "C:\vs\duediligence\DueDiligenceRAG\interview_dataset"
+    base_path = "/content/DueDiligenceRAG/content/DueDiligenceRAG/interview_dataset"
+    #base_path = "C:\vs\duediligence\DueDiligenceRAG\interview_dataset"
 
     s3 = boto3.client(
         's3',

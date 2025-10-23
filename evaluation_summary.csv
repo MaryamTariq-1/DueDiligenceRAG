@@ -1,0 +1,13 @@
+model,prompt_type,accuracy_score_mean,accuracy_score_std,accuracy_score_count,latency_mean,latency_std,cost_mean,cost_sum
+deepseek-chat,analytical,0.0136,0.0702,10,0.4892,0.0287,0.0,0.0
+deepseek-chat,factual,0.0136,0.0702,10,0.4908,0.0311,0.0,0.0
+deepseek-chat,structured,0.0136,0.0702,10,0.4976,0.0187,0.0,0.0
+gemini-1.5-flash,analytical,0.0089,0.0528,10,0.6662,0.0177,0.0,0.0
+gemini-1.5-flash,factual,0.0089,0.0528,10,0.8014,0.315,0.0,0.0
+gemini-1.5-flash,structured,0.0089,0.0528,10,0.6608,0.0203,0.0,0.0
+llama-3.3-70b-versatile,analytical,0.5141,0.131,10,1.6646,0.4567,0.0,0.0
+llama-3.3-70b-versatile,factual,0.3709,0.2655,10,0.3424,0.0786,0.0,0.0
+llama-3.3-70b-versatile,structured,0.509,0.1057,10,1.0368,0.3232,0.0,0.0
+mixtral-8x7b-32768,analytical,0.0358,0.0745,10,0.157,0.0164,0.0,0.0
+mixtral-8x7b-32768,factual,0.0358,0.0745,10,0.1574,0.0095,0.0,0.0
+mixtral-8x7b-32768,structured,0.0358,0.0745,10,0.1638,0.0166,0.0,0.0

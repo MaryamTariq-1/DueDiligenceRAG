@@ -1,4 +1,4 @@
-# evaluation.py
+
 import pandas as pd
 import numpy as np
 from sentence_transformers import SentenceTransformer
@@ -22,7 +22,8 @@ class Evaluator:
     def load_ground_truth_data(self) -> pd.DataFrame:
         """Load and return ground truth Q&A pairs"""
         try:
-            df = pd.read_csv('training_data.csv')
+            # FIXED: Use correct path from document_loader
+            df = pd.read_csv('data/training_data.csv')
             self.ground_truth_data = df
             print(f"✓ Loaded {len(df)} ground truth Q&A pairs")
             return df
@@ -42,7 +43,7 @@ class Evaluator:
         return ""
 
     def calculate_cosine_similarity(self, reference: str, generated: str) -> float:
-        """Calculate cosine similarity between reference and generated answers - Step 5"""
+        """Calculate cosine similarity between reference and generated answers"""
         if not reference or not generated:
             return 0.0
 
@@ -59,7 +60,7 @@ class Evaluator:
             return 0.0
 
     def evaluate_and_log(self, result: Dict) -> float:
-        """Evaluate a single result and log to Langfuse - Step 5"""
+        """Evaluate a single result and log to Langfuse"""
         question = result['question']
         reference_answer = self.get_reference_answer(question)
         generated_answer = result['generated_answer']
@@ -83,8 +84,7 @@ class Evaluator:
                 "question": question,
                 "reference_answer": reference_answer,
                 "generated_answer": generated_answer[:500]  # First 500 chars
-            },
-            tags=[model_name, prompt_type, "accuracy_evaluation"]
+            }
         )
 
         # Log accuracy score
@@ -94,7 +94,7 @@ class Evaluator:
             comment=f"Cosine similarity score for {model_name} with {prompt_type} prompt"
         )
 
-        # Log other metrics for completeness
+        # Log other metrics
         trace.score(
             name="latency_seconds",
             value=result['latency']
@@ -133,7 +133,7 @@ class Evaluator:
 
         return results_df
 
-    def generate_summary_stats(self, results_df: pd.DataFrame) -> Dict:
+    def generate_summary_stats(self, results_df: pd.DataFrame) -> pd.DataFrame:
         """Generate summary statistics for results"""
         summary = results_df.groupby(['model', 'prompt_type']).agg({
             'accuracy_score': ['mean', 'std', 'count'],
@@ -141,7 +141,6 @@ class Evaluator:
             'cost': ['mean', 'sum']
         }).round(4)
 
-        # Flatten column names
         summary.columns = ['_'.join(col).strip() for col in summary.columns.values]
         summary = summary.reset_index()
 

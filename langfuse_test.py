@@ -1,8 +1,9 @@
-# working_langfuse_test.py
+
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+path_env= "/content/DueDiligenceRAG/content/DueDiligenceRAG/.env"
+load_dotenv(path_env)
 
 
 def test_langfuse_working():

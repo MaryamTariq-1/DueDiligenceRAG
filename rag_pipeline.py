@@ -1,12 +1,13 @@
-# rag_pipeline.py - COMPLETE
 import boto3
 import pandas as pd
 from langfuse import Langfuse
 from langchain_community.vectorstores import FAISS
-from langchain_openai import OpenAIEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_core.documents import Document
 from sentence_transformers import SentenceTransformer
 from openai import OpenAI
+import google.generativeai as genai
+import cohere
 from config import *
 import time
 import json
@@ -16,7 +17,10 @@ from typing import List, Dict, Tuple
 class RAGPipeline:
     def __init__(self):
         self.s3 = boto3.client('s3')
-        self.embeddings = OpenAIEmbeddings(model=EMBEDDING_MODEL)
+        # FIXED: Use correct HuggingFace embeddings
+        self.embeddings = HuggingFaceEmbeddings(
+            model_name=EMBEDDING_MODEL
+        )
         self.vector_store = None
         self.similarity_model = SentenceTransformer('all-MiniLM-L6-v2')
         self.langfuse = Langfuse(
@@ -29,10 +33,10 @@ class RAGPipeline:
         """Load existing vector store"""
         try:
             self.vector_store = FAISS.load_local("vector_store", self.embeddings, allow_dangerous_deserialization=True)
-            print("Vector store loaded from disk")
+            print("✓ Vector store loaded from disk")
             return True
         except Exception as e:
-            print(f"Error loading vector store: {e}")
+            print(f"✗ Error loading vector store: {e}")
             return False
 
     def retrieve_context(self, query: str, k: int = TOP_K_RESULTS) -> Tuple[str, List[str]]:
@@ -44,7 +48,7 @@ class RAGPipeline:
         context = "\n\n".join([doc.page_content for doc in docs])
         sources = [doc.metadata.get('source', 'unknown') for doc in docs]
 
-        print(f"Retrieved {len(docs)} context chunks")
+        print(f"   Retrieved {len(docs)} context chunks")
         return context, sources
 
     def create_prompt(self, question: str, context: str, prompt_type: str = "factual") -> str:
@@ -73,20 +77,20 @@ Please structure your response as follows:
 
 RESPONSE:""",
 
-            "structured": f"""Based on the context provided, answer the question using a structured JSON format.
+            "structured": f"""Based on the context provided, answer the question using a structured format.
 
 CONTEXT:
 {context}
 
 QUESTION: {question}
 
-Provide your answer as a valid JSON object with exactly these keys:
-- "answer": main answer string
-- "confidence": "high/medium/low" 
-- "key_points": array of bullet points
-- "supporting_evidence": array of evidence snippets
+Provide your answer in this structured format:
+- MAIN ANSWER: [your main answer]
+- CONFIDENCE: [high/medium/low]
+- KEY POINTS: [bullet points]
+- EVIDENCE: [supporting evidence from context]
 
-JSON RESPONSE:"""
+STRUCTURED RESPONSE:"""
         }
         return base_prompts.get(prompt_type, base_prompts["factual"])
 
@@ -97,86 +101,92 @@ JSON RESPONSE:"""
         try:
             model_config = MODELS[model_name]
             provider = model_config["provider"]
+            api_key = model_config["api_key"]
+
+            if not api_key:
+                return f"Error: No API key for {model_name}", 0.0, 0.0
 
             # Start Langfuse trace
             trace = self.langfuse.trace(
-                name=f"RAG_{provider}_{prompt_type}",
+                name=f"RAG_{model_name}_{prompt_type}",
                 user_id="evaluation",
                 metadata={
                     "model": model_name,
                     "provider": provider,
-                    "prompt_type": prompt_type,
-                    "timestamp": time.time()
-                },
-                tags=[model_name, provider, prompt_type, "free_model"]
+                    "prompt_type": prompt_type
+                }
             )
 
             # Log generation
             generation = trace.generation(
-                name=f"generation_{provider}_{prompt_type}",
+                name=f"generation_{model_name}",
                 input=prompt,
                 metadata={
                     "model": model_name,
                     "provider": provider,
-                    "prompt_type": prompt_type,
-                    "prompt_length": len(prompt)
+                    "prompt_type": prompt_type
                 }
             )
+
+            answer = ""
 
             # Call appropriate provider
             if provider == "groq":
                 client = OpenAI(
-                    api_key=model_config["api_key"],
+                    api_key=api_key,
                     base_url=model_config["base_url"]
                 )
                 response = client.chat.completions.create(
                     model=model_name,
                     messages=[{"role": "user", "content": prompt}],
-                    max_tokens=500
-                )
-                answer = response.choices[0].message.content
-
-            elif provider == "openrouter":
-                client = OpenAI(
-                    api_key=model_config["api_key"],
-                    base_url=model_config["base_url"]
-                )
-                response = client.chat.completions.create(
-                    model=model_name,
-                    messages=[{"role": "user", "content": prompt}],
-                    max_tokens=500
+                    max_tokens=model_config["max_tokens"],
+                    temperature=0.1
                 )
                 answer = response.choices[0].message.content
 
             elif provider == "deepseek":
                 client = OpenAI(
-                    api_key=model_config["api_key"],
+                    api_key=api_key,
                     base_url=model_config["base_url"]
                 )
                 response = client.chat.completions.create(
                     model=model_name,
                     messages=[{"role": "user", "content": prompt}],
-                    max_tokens=500
+                    max_tokens=model_config["max_tokens"],
+                    temperature=0.1
                 )
                 answer = response.choices[0].message.content
+
+            elif provider == "openrouter":
+                client = OpenAI(
+                    api_key=api_key,
+                    base_url=model_config["base_url"]
+                )
+                response = client.chat.completions.create(
+                    model=model_name,
+                    messages=[{"role": "user", "content": prompt}],
+                    max_tokens=model_config["max_tokens"],
+                    temperature=0.1
+                )
+                answer = response.choices[0].message.content
+
+            elif provider == "google":
+                genai.configure(api_key=api_key)
+                model = genai.GenerativeModel(model_name.split('/')[-1] if '/' in model_name else model_name)
+                response = model.generate_content(prompt)
+                answer = response.text
 
             latency = time.time() - start_time
             cost = 0.0  # All models are FREE
 
-            # Update generation
+            # Update generation with output
             generation.update(
                 output=answer,
                 metadata={
                     "latency_seconds": latency,
-                    "cost_usd": cost,
-                    "output_length": len(answer)
+                    "cost_usd": cost
                 }
             )
-
-            # Add scores
-            trace.score(name="generation_success", value=1.0)
-            trace.score(name="latency", value=latency)
-            trace.score(name="cost", value=cost)
 
             self.langfuse.flush()
 
@@ -184,28 +194,44 @@ JSON RESPONSE:"""
 
         except Exception as e:
             error_latency = time.time() - start_time
-            print(f"Error calling {model_name}: {e}")
-            return f"Error: {str(e)}", error_latency, 0.0
+            error_msg = f"Error calling {model_name}: {str(e)}"
+            print(f"   {error_msg}")
+            return error_msg, error_latency, 0.0
 
-    def evaluate_similarity(self, reference: str, generated: str) -> float:
-        """Evaluate similarity using sentence transformers"""
-        if not reference or not generated:
-            return 0.0
+    def run_single_evaluation(self, question: str, models: List[str], prompt_types: List[str]) -> List[Dict]:
+        """Run evaluation for a single question across models and prompt types"""
+        results = []
 
-        try:
-            ref_embedding = self.similarity_model.encode([reference])
-            gen_embedding = self.similarity_model.encode([generated])
-            from sklearn.metrics.pairwise import cosine_similarity
-            similarity = cosine_similarity(ref_embedding, gen_embedding)[0][0]
-            return float(similarity)
-        except Exception as e:
-            print(f"Similarity calculation error: {e}")
-            return 0.0
+        print(f"   Processing: {question[:80]}...")
+
+        # Retrieve context once per question
+        context, sources = self.retrieve_context(question)
+
+        for model_name in models:
+            for prompt_type in prompt_types:
+                print(f"     Testing {model_name} with {prompt_type} prompt...")
+
+                prompt = self.create_prompt(question, context, prompt_type)
+                answer, latency, cost = self.call_model(model_name, prompt, prompt_type)
+
+                result = {
+                    'question': question,
+                    'model': model_name,
+                    'prompt_type': prompt_type,
+                    'generated_answer': answer,
+                    'latency': latency,
+                    'cost': cost,
+                    'context_sources': sources
+                }
+
+                results.append(result)
+
+        return results
 
 
 # Test function
 def test_rag_pipeline():
-    print("Testing RAG Pipeline with FREE Models")
+    print("Testing RAG Pipeline with Available Models")
     print("=" * 50)
 
     rag = RAGPipeline()
@@ -218,27 +244,22 @@ def test_rag_pipeline():
 
     print(f"Question: {test_question}")
 
-    # Retrieve context
-    context, sources = rag.retrieve_context(test_question)
-    print(f"Retrieved context from {len(sources)} sources")
-
-    # Test first 3 models
-    test_models = list(MODELS.keys())[:3]
-
-    for model_name in test_models:
+    # Test with evaluation models
+    for model_name in EVALUATION_MODELS[:2]:  # Test first 2 models
         print(f"\nTesting: {model_name}")
         print("-" * 40)
 
-        for prompt_type in PROMPT_STYLES:
+        for prompt_type in PROMPT_STYLES[:1]:  # Test only factual first
             print(f"Testing {prompt_type} prompt...")
 
+            context, sources = rag.retrieve_context(test_question)
             prompt = rag.create_prompt(test_question, context, prompt_type)
             answer, latency, cost = rag.call_model(model_name, prompt, prompt_type)
 
-            print(f"Answer preview: {answer[:80]}...")
+            print(f"Answer: {answer[:100]}...")
             print(f"Latency: {latency:.2f}s")
-            print(f"Cost: ${cost} (FREE)")
-            print("Check Langfuse dashboard for trace!")
+            print(f"Cost: ${cost}")
+            print("✓ Check Langfuse dashboard for trace!")
 
 
 if __name__ == "__main__":
